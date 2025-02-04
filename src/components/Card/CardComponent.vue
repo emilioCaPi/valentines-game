@@ -26,11 +26,6 @@
   padding: 2rem;
   text-align: center;
 
-  /* display: flex;
-  flex-direction: column;
-  place-items: start;
-  place-content: center; */
-
   &.active {
     opacity: 1;
     transform: translateY(0) scale(1);

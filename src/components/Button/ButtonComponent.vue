@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<IButtonProps>(), {
     disabled: false,
     color: 'primary',
     spinner: false,
+    hidden: false,
   }),
 })
 
@@ -24,6 +25,7 @@ const color = computed(() => colorClasses[props.protocol.color || 'primary'])
 
 <template>
   <button
+    v-if="!props.protocol.hidden"
     :class="[
       props.protocol.disabled
         ? 'pointer-events-none'

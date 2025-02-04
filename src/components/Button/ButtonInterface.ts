@@ -3,6 +3,7 @@ export interface IButtonProtocol {
   disabled?: boolean
   color?: 'primary' | 'outline'
   loading?: boolean
+  hidden?: boolean
 }
 
 export interface IButtonProps {

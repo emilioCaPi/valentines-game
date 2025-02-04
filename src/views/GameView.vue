@@ -5,29 +5,33 @@ import CardComponent from '@/components/Card/CardComponent.vue'
 import router from '@/router'
 import { useGameStore, type proposalAnswer } from '@/stores/game'
 import { useMessageStore } from '@/stores/message'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 // ------------------------- Protocols -------------------------
 const previousButtonProtocol = ref<IButtonProtocol>({
   text: '👈🏼',
   color: 'outline',
+  hidden: true,
 })
 
 const nextButtonProtocol = ref<IButtonProtocol>({
   text: '👉🏼',
   color: 'outline',
+  hidden: false,
 })
 
 const yesButtonProtocol = ref<IButtonProtocol>({
   text: 'Siu',
   color: 'outline',
   disabled: false,
+  hidden: true,
 })
 
 const noButtonProtocol = ref<IButtonProtocol>({
   text: 'Nou',
   color: 'outline',
   disabled: false,
+  hidden: true,
 })
 
 // ------------------------- Card Props -------------------------
@@ -35,7 +39,7 @@ interface IGameCardContent {
   question: string
 }
 
-const currentIndex = ref<number>(0)
+const currentCardIndex = ref<number>(0)
 
 const cards: IGameCardContent[] = [
   {
@@ -61,21 +65,40 @@ const cards: IGameCardContent[] = [
   },
 ]
 
+const firstCard = computed(() => {
+  return currentCardIndex.value === 0
+})
+
 const lastCard = computed(() => {
-  return currentIndex.value === cards.length - 1
+  return currentCardIndex.value === cards.length - 1
 })
 
 const nextCard = () => {
   if (!lastCard.value) {
-    currentIndex.value++
+    currentCardIndex.value++
   }
 }
 
 const previousCard = () => {
-  if (currentIndex.value > 0) {
-    currentIndex.value--
+  if (!firstCard.value) {
+    currentCardIndex.value--
   }
 }
+
+/**
+ * Hide prev. button at the first card
+ * Hide next button at the last card
+ */
+watch(currentCardIndex, (newIndex) => {
+  const firstCard: boolean = newIndex === 0
+  const lastCard: boolean = newIndex === cards.length - 1
+
+  previousButtonProtocol.value.hidden = firstCard || lastCard
+  nextButtonProtocol.value.hidden = lastCard
+
+  yesButtonProtocol.value.hidden = !lastCard
+  noButtonProtocol.value.hidden = !lastCard
+})
 
 // ------------------------- Form -------------------------
 const gameStore = useGameStore()
@@ -121,30 +144,19 @@ const updateMessage = (answer: proposalAnswer) => {
     <CardComponent
       v-for="(card, index) in cards"
       :key="index"
-      :class="{ active: index === currentIndex }"
+      :class="{ active: index === currentCardIndex }"
     >
-      <div class="flex flex-col h-full place-content-center">
+      <div class="flex flex-col place-content-center">
         <h2>{{ card.question }}</h2>
       </div>
     </CardComponent>
   </div>
 
   <div class="flex w-100 justify-center space-x-2">
-    <template v-if="lastCard">
-      <ButtonComponent :protocol="yesButtonProtocol" @click="submitAnswer('yes')"></ButtonComponent>
-      <ButtonComponent :protocol="noButtonProtocol" @click="submitAnswer('no')"></ButtonComponent>
-    </template>
-    <template v-else>
-      <ButtonComponent
-        :protocol="previousButtonProtocol"
-        @click="previousCard"
-        :class="[currentIndex === 0 ? 'hidden' : 'block']"
-      ></ButtonComponent>
-      <ButtonComponent
-        :protocol="nextButtonProtocol"
-        @click="nextCard"
-        :class="[lastCard ? 'hidden' : 'block']"
-      ></ButtonComponent>
-    </template>
+    <ButtonComponent :protocol="yesButtonProtocol" @click="submitAnswer('yes')"></ButtonComponent>
+    <ButtonComponent :protocol="noButtonProtocol" @click="submitAnswer('no')"></ButtonComponent>
+
+    <ButtonComponent :protocol="previousButtonProtocol" @click="previousCard"></ButtonComponent>
+    <ButtonComponent :protocol="nextButtonProtocol" @click="nextCard"></ButtonComponent>
   </div>
 </template>
