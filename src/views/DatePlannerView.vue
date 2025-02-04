@@ -4,7 +4,6 @@ import type { IButtonProtocol } from '@/components/Button/ButtonInterface'
 import CardComponent from '@/components/Card/CardComponent.vue'
 import { goToNextStep } from '@/router'
 import { useMessageStore } from '@/stores/message'
-import { useSummaryStore } from '@/stores/summary'
 import { ref, watch } from 'vue'
 
 export interface IDateOption {
@@ -72,13 +71,12 @@ watch([selectedOption, otherOption], ([newSelectedVal, newOtherOptionVal]) => {
 })
 
 const messageStore = useMessageStore()
-const summaryStore = useSummaryStore()
 
 const submit = () => {
   disableBtn()
 
   const result = getResultOptions()
-  summaryStore.setDateResult(result)
+  setDateResult(result)
 
   setTimeout(() => {
     doneButtonProtocol.value.loading = false
@@ -86,6 +84,10 @@ const submit = () => {
   }, 3000)
 
   updateMessage()
+}
+
+function setDateResult(result: IDateOption[]) {
+  localStorage.setItem('dateResult', JSON.stringify(result))
 }
 
 function getResultOptions(): IDateOption[] {
