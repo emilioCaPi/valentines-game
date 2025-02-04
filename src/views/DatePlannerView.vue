@@ -2,8 +2,7 @@
 import ButtonComponent from '@/components/Button/ButtonComponent.vue'
 import type { IButtonProtocol } from '@/components/Button/ButtonInterface'
 import CardComponent from '@/components/Card/CardComponent.vue'
-import router from '@/router'
-import { useGameStore } from '@/stores/game'
+import { goToNextStep } from '@/router'
 import { useMessageStore } from '@/stores/message'
 import { useSummaryStore } from '@/stores/summary'
 import { ref, watch } from 'vue'
@@ -57,19 +56,16 @@ watch(selectedOption, (newVal) => {
   doneButtonProtocol.value.disabled = newVal.length < 2
 })
 
-const gameStore = useGameStore()
 const messageStore = useMessageStore()
 const summaryStore = useSummaryStore()
 
 const submit = () => {
-  gameStore.step++
-
   disableBtn()
   summaryStore.setDateResult(selectedOption.value)
 
   setTimeout(() => {
     doneButtonProtocol.value.loading = false
-    router.push('/summary')
+    setTimeout(() => goToNextStep('/summary'), 1000)
   }, 3000)
 
   updateMessage()

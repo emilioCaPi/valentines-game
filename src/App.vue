@@ -1,27 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import ButtonComponent from '@/components/Button/ButtonComponent.vue'
+import { computed } from 'vue'
 import MessageComponent from './components/Message/MessageComponent.vue'
-import type { IButtonProtocol } from './components/Button/ButtonInterface'
-import { useGameStore } from './stores/game'
-import { useRouter } from 'vue-router'
 import { useMessageStore } from './stores/message'
-
-const router = useRouter()
-const gameStore = useGameStore()
-
-// ------------------------- Reset Game -------------------------
-const buttonProtocol = ref<IButtonProtocol>({
-  text: 'Restart',
-  color: 'outline',
-})
-
-const hideButton = computed(() => gameStore.step > 0 && gameStore.step < 3)
-
-const resetGame = () => {
-  gameStore.step = 3
-  router.push('/')
-}
 
 // ------------------------- Get Messages -------------------------
 const messageStore = useMessageStore()

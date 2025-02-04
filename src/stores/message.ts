@@ -1,6 +1,7 @@
 import type { IMessageProps, IMessageSeverity } from '@/components/Message/MessageInterface'
 import { defineStore } from 'pinia'
-import type { proposalAnswer } from './game'
+
+export type proposalAnswer = 'yes' | 'no'
 
 interface State {
   messages: IMessageProps[]

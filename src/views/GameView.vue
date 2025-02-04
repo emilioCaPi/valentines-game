@@ -2,9 +2,8 @@
 import ButtonComponent from '@/components/Button/ButtonComponent.vue'
 import type { IButtonProtocol } from '@/components/Button/ButtonInterface'
 import CardComponent from '@/components/Card/CardComponent.vue'
-import router from '@/router'
-import { useGameStore, type proposalAnswer } from '@/stores/game'
-import { useMessageStore } from '@/stores/message'
+import { goToNextStep } from '@/router'
+import { useMessageStore, type proposalAnswer } from '@/stores/message'
 import { computed, ref, watch } from 'vue'
 
 // ------------------------- Protocols -------------------------
@@ -101,21 +100,19 @@ watch(currentCardIndex, (newIndex) => {
 })
 
 // ------------------------- Form -------------------------
-const gameStore = useGameStore()
 const messageStore = useMessageStore()
 
 const answerSubmitted = ref<boolean>(false)
 
 const submitAnswer = (answer: proposalAnswer) => {
   if (answer === 'yes') {
-    gameStore.step++
     answerSubmitted.value = true
 
     disableBtn()
 
     setTimeout(() => {
       yesButtonProtocol.value.loading = false
-      router.push('date')
+      goToNextStep('/date')
     }, 3000)
   }
 

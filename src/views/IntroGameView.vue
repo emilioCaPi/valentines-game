@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import ButtonComponent from '@/components/Button/ButtonComponent.vue'
 import type { IButtonProtocol } from '@/components/Button/ButtonInterface'
-import { useGameStore } from '@/stores/game'
+import { goToNextStep } from '@/router'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-const gameStore = useGameStore()
 
 const buttonProtocol = ref<IButtonProtocol>({
   text: 'Demole',
@@ -16,10 +12,7 @@ const gameStarted = ref<boolean>(false)
 
 const startGame = () => {
   gameStarted.value = true
-  setTimeout(() => {
-    gameStore.step = 1
-    router.push('/game')
-  }, 1000)
+  setTimeout(() => goToNextStep('/game'), 1000)
 }
 
 /**
