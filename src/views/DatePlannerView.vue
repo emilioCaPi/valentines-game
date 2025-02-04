@@ -4,6 +4,7 @@ import type { IButtonProtocol } from '@/components/Button/ButtonInterface'
 import CardComponent from '@/components/Card/CardComponent.vue'
 import { goToNextStep } from '@/router'
 import { useMessageStore } from '@/stores/message'
+import { launchFireworks } from '@/utils/fireworks'
 import { ref, watch } from 'vue'
 
 export interface IDateOption {
@@ -73,6 +74,7 @@ watch([selectedOption, otherOption], ([newSelectedVal, newOtherOptionVal]) => {
 const messageStore = useMessageStore()
 
 const submit = () => {
+  launchFireworks()
   disableBtn()
 
   const result = getResultOptions()
